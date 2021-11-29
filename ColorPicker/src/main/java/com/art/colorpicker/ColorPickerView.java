@@ -35,7 +35,9 @@ import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -266,9 +268,14 @@ public class ColorPickerView extends View {
       return;
     }
 
+    long start = SystemClock.uptimeMillis();
+
     drawSatValPanel(canvas);
     drawHuePanel(canvas);
     drawAlphaPanel(canvas);
+
+    long elapsed = SystemClock.uptimeMillis() - start;
+    Log.i("ColorPicker", "ColorPickerView onDraw: elapsed " + elapsed);
   }
 
   private void drawSatValPanel(Canvas canvas) {

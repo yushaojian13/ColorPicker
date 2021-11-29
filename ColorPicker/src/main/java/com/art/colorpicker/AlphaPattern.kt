@@ -5,12 +5,14 @@ import android.graphics.*
 const val WHITE_COLOR: Int = -0x1 // 0xFFFFFFFF
 const val GRAY_COLOR: Int = -0x343435 // 0xFFCBCBCB
 
-fun createAlphaPatternShader(size: Int): Shader {
-    val alphaBitmap = createAlphaPatternBitmap(size)
+fun createAlphaPatternShader(size: Int): Shader? {
+    val alphaBitmap = createAlphaPatternBitmap(size) ?: return null
     return BitmapShader(alphaBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT)
 }
 
-fun createAlphaPatternBitmap(size: Int): Bitmap {
+fun createAlphaPatternBitmap(size: Int): Bitmap? {
+    if (size <= 0) return null
+
     val alphaPatternPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
