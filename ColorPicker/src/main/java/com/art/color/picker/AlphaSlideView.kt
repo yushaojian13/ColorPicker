@@ -33,6 +33,11 @@ class AlphaSlideView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     fun getCurrentAlpha() = ((1 - ratio) * 255).toInt()
 
+    fun setCurrentAlpha(alpha: Int) {
+        ratio = 1 - alpha / 255f
+        invalidate()
+    }
+
     override fun onContentRectChanged() {
         resetMaskShader()
     }
@@ -60,9 +65,4 @@ class AlphaSlideView @JvmOverloads constructor(context: Context, attrs: Attribut
         alphaChangedListener?.onAlphaPicked(getCurrentAlpha())
     }
 
-}
-
-interface OnAlphaChangedListener {
-    fun onAlphaChanged(alpha: Int)
-    fun onAlphaPicked(alpha: Int)
 }

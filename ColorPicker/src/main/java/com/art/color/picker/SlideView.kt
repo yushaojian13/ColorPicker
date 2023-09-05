@@ -26,6 +26,7 @@ abstract class SlideView @JvmOverloads constructor(context: Context, attrs: Attr
         set(value) {
             field = value
             thumbX = ratio * maxThumbSlideDistance
+            onRatioChanged(ratio)
             postInvalidate()
         }
 
@@ -42,6 +43,7 @@ abstract class SlideView @JvmOverloads constructor(context: Context, attrs: Attr
         viewHeight = h.toFloat()
         maxThumbSlideDistance = viewWidth - thumbWidth
         thumbX = ratio * maxThumbSlideDistance
+        thumbY = h / 2f - thumbBitmap.height / 2f
         val halfThumbWidth = thumbWidth / 2f
         contentRectF.set(halfThumbWidth, h * 0.3f, viewWidth - halfThumbWidth, h * 0.7f)
         onContentRectChanged()

@@ -78,8 +78,3 @@ class ColorSlideView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
 }
-
-interface OnColorChangedListener {
-    fun onColorChanged(color: Int)
-    fun onColorPicked(color: Int)
-}

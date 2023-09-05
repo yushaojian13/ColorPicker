@@ -15,32 +15,11 @@
         tools:background="@color/black"
         tools:text="FF000000" />
 
-    <com.art.color.picker.hsv.HueSlideView
-        android:id="@+id/hueSlideView"
+    <com.art.color.picker.hsv.HSVSlideView
+        android:id="@+id/hsvSlideView"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_above="@+id/satSlideView"
-        android:layout_marginHorizontal="16dp" />
-
-    <com.art.color.picker.hsv.SaturationSlideView
-        android:id="@+id/satSlideView"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_above="@+id/valueSlideView"
-        android:layout_marginHorizontal="16dp" />
-
-    <com.art.color.picker.hsv.ValueSlideView
-        android:id="@+id/valueSlideView"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_above="@+id/alphaSlideView"
-        android:layout_marginHorizontal="16dp" />
-
-    <com.art.color.picker.AlphaSlideView
-        android:id="@+id/alphaSlideView"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="120dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="16dp" />
+        android:paddingHorizontal="16dp" />
 
 </RelativeLayout>
