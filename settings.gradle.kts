@@ -16,3 +16,6 @@ dependencyResolutionManagement {
 rootProject.name = "ColorPicker"
 include(":app")
 include(":ColorPicker")
+include(":Util")
+
+project(":Util").projectDir = File("../Util/Util")
