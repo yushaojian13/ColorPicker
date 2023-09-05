@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/colorTV"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:textColor="@color/white"
+        tools:background="@color/black"
+        tools:text="FF000000" />
+
+    <com.art.color.picker.ColorSlideView
+        android:id="@+id/colorSlideView"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_above="@+id/alphaSlideView"
+        android:layout_marginHorizontal="16dp" />
+
+    <com.art.color.picker.AlphaSlideView
+        android:id="@+id/alphaSlideView"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="16dp" />
+
+</RelativeLayout>
