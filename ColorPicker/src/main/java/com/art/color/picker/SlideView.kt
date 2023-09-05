@@ -21,12 +21,13 @@ abstract class SlideView @JvmOverloads constructor(context: Context, attrs: Attr
     private var thumbWidth = thumbBitmap.width
     private var maxThumbSlideDistance = 0f
     private var previousX = 0f
+
     protected var ratio = 0f
-    set(value) {
-        field = value
-        thumbX = ratio * maxThumbSlideDistance
-        postInvalidate()
-    }
+        set(value) {
+            field = value
+            thumbX = ratio * maxThumbSlideDistance
+            postInvalidate()
+        }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
@@ -64,6 +65,7 @@ abstract class SlideView @JvmOverloads constructor(context: Context, attrs: Attr
                 parent.requestDisallowInterceptTouchEvent(true)
                 return insideThumb
             }
+
             MotionEvent.ACTION_MOVE -> {
                 val distance = event.x - previousX
                 var result = thumbX + distance
@@ -78,6 +80,7 @@ abstract class SlideView @JvmOverloads constructor(context: Context, attrs: Attr
                 ratio = result / maxThumbSlideDistance
                 onRatioChanged(ratio)
             }
+
             MotionEvent.ACTION_UP -> {
                 onRatioPicked(ratio)
                 parent.requestDisallowInterceptTouchEvent(false)

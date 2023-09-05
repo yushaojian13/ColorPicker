@@ -15,8 +15,22 @@
         tools:background="@color/black"
         tools:text="FF000000" />
 
-    <com.art.color.picker.ColorSlideView
-        android:id="@+id/colorSlideView"
+    <com.art.color.picker.hsv.HueSlideView
+        android:id="@+id/hueSlideView"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_above="@+id/satSlideView"
+        android:layout_marginHorizontal="16dp" />
+
+    <com.art.color.picker.hsv.SaturationSlideView
+        android:id="@+id/satSlideView"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_above="@+id/valueSlideView"
+        android:layout_marginHorizontal="16dp" />
+
+    <com.art.color.picker.hsv.ValueSlideView
+        android:id="@+id/valueSlideView"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_above="@+id/alphaSlideView"
