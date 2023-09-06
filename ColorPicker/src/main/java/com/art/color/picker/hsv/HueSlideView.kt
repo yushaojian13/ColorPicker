@@ -1,6 +1,7 @@
 package com.art.color.picker.hsv
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -11,7 +12,7 @@ import com.art.color.picker.SlideView
 class HueSlideView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : SlideView(context, attrs) {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private var colorSegments: IntArray? = null
+    private var bitmapBuffer: Bitmap? = null // 提升绘制性能
 
     private val clipPath = Path()
 
@@ -25,33 +26,41 @@ class HueSlideView @JvmOverloads constructor(context: Context, attrs: AttributeS
     fun getHue() = ratio * 360f
 
     override fun onContentRectChanged() {
-        if (contentRectF.width() < 360) { // 要求至少360像素宽
-            colorSegments = null
+        if (contentRectF.width() < 360 || contentRectF.height() <= 0) { // 要求至少360像素宽
+            bitmapBuffer = null
             return
         }
 
-        val colorsCount = contentRectF.width().toInt()
-        colorSegments = IntArray(colorsCount) { i ->
-            // S,V fixed to 1, H varies from [0, 360)
+        bitmapBuffer?.recycle()
+
+        val width = contentRectF.width()
+        val height = contentRectF.height()
+        val bitmap = Bitmap.createBitmap((width + 0.5f).toInt(), (height + 0.5f).toInt(), Bitmap.Config.ARGB_8888)
+        val hueCanvas = Canvas(bitmap)
+
+        var x = 0f
+        while (x < width) {
+            // S,V fixed to 1, H varies from [0, 360]
             // i -> [0, colorsCount - 1]
             // H -> [0, 360]
-            Color.HSVToColor(floatArrayOf(360f / (colorsCount - 1) * i, 1f, 1f))
+            paint.color = Color.HSVToColor(floatArrayOf(360f / (width - 1) * x, 1f, 1f))
+            hueCanvas.drawLine(x, 0f, x, height, paint)
+            x += 1
         }
+
+        bitmapBuffer = bitmap
 
         clipPath.rewind()
         clipPath.addRoundRect(contentRectF, 20f, 20f, Path.Direction.CW)
     }
 
     override fun drawContents(canvas: Canvas) {
-        val colors = colorSegments ?: return
+        val bitmap = bitmapBuffer
+        if (bitmap == null || bitmap.isRecycled) return
 
         canvas.save()
         canvas.clipPath(clipPath)
-        for (i in colors.indices) {
-            paint.color = colors[i]
-            val x = contentRectF.left + i.toFloat()
-            canvas.drawLine(x, contentRectF.top, x, contentRectF.bottom, paint)
-        }
+        canvas.drawBitmap(bitmap, contentRectF.left, contentRectF.top, null)
         canvas.restore()
     }
 
