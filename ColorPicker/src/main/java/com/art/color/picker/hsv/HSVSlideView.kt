@@ -8,6 +8,7 @@ import android.widget.Space
 import com.art.color.picker.AlphaSlideView
 import com.art.color.picker.OnAlphaChangedListener
 import com.art.color.picker.OnColorChangedListener
+import com.art.color.picker.R
 import com.art.util.dp
 
 /**
@@ -18,13 +19,13 @@ class HSVSlideView @JvmOverloads constructor(context: Context, attrs: AttributeS
     private val hueSlideView = HueSlideView(context)
     private val saturationSlideView = SaturationSlideView(context)
     private val valueSlideView = ValueSlideView(context)
-    private val alphaSlideView = AlphaSlideView(context)
+    private var alphaSlideView: AlphaSlideView? = null
 
     var colorChangedListener: OnColorChangedListener? = null
 
     var color: Int
         get() {
-            val alpha = alphaSlideView.getCurrentAlpha()
+            val alpha = currentAlpha
             val color = Color.HSVToColor(floatArrayOf(hueSlideView.getHue(), saturationSlideView.getSaturation(), valueSlideView.getValue()))
             return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
         }
@@ -34,11 +35,15 @@ class HSVSlideView @JvmOverloads constructor(context: Context, attrs: AttributeS
             hueSlideView.setHue(hsv[0])
             saturationSlideView.setSaturation(hsv[1])
             valueSlideView.setValue(hsv[2])
-            alphaSlideView.setCurrentAlpha(Color.alpha(value))
+            alphaSlideView?.setCurrentAlpha(Color.alpha(value))
         }
 
     init {
         orientation = VERTICAL
+        
+        val a = context.obtainStyledAttributes(attrs, R.styleable.HSVSlideView)
+        val showAlphaSlider = a.getBoolean(R.styleable.HSVSlideView_hsv_show_alpha, true)
+        a.recycle()
 
         val sliderLP = LayoutParams(LayoutParams.MATCH_PARENT, (30.dp + 0.5f).toInt())
         val spaceLP = LayoutParams(LayoutParams.MATCH_PARENT, 0)
@@ -51,11 +56,15 @@ class HSVSlideView @JvmOverloads constructor(context: Context, attrs: AttributeS
         addView(Space(context), spaceLP)
         addView(valueSlideView, sliderLP)
         addView(Space(context), spaceLP)
-        addView(alphaSlideView, sliderLP)
-        addView(Space(context), spaceLP)
+        
+        if (showAlphaSlider) {
+            alphaSlideView = AlphaSlideView(context)
+            addView(alphaSlideView, sliderLP)
+            addView(Space(context), spaceLP)
+        }
 
 
-        alphaSlideView.setOnAlphaChangedListener(object : OnAlphaChangedListener {
+        alphaSlideView?.setOnAlphaChangedListener(object : OnAlphaChangedListener {
             override fun onAlphaChanged(alpha: Int) {
                 val color = Color.HSVToColor(floatArrayOf(hueSlideView.getHue(), saturationSlideView.getSaturation(), valueSlideView.getValue()))
                 onColorChanged(alpha, color)
@@ -72,13 +81,13 @@ class HSVSlideView @JvmOverloads constructor(context: Context, attrs: AttributeS
                 saturationSlideView.setHue(hue)
                 valueSlideView.setHue(hue)
                 val color = Color.HSVToColor(floatArrayOf(hue, saturationSlideView.getSaturation(), valueSlideView.getValue()))
-                alphaSlideView.setMaskColor(color)
-                onColorChanged(alphaSlideView.getCurrentAlpha(), color)
+                alphaSlideView?.setMaskColor(color)
+                onColorChanged(currentAlpha, color)
             }
 
             override fun onHuePicked(hue: Float) {
                 val color = Color.HSVToColor(floatArrayOf(hue, saturationSlideView.getSaturation(), valueSlideView.getValue()))
-                onColorPicked(alphaSlideView.getCurrentAlpha(), color)
+                onColorPicked(currentAlpha, color)
             }
         }
 
@@ -86,13 +95,13 @@ class HSVSlideView @JvmOverloads constructor(context: Context, attrs: AttributeS
             override fun onSaturationChanged(saturation: Float) {
                 valueSlideView.setSaturation(saturation)
                 val color = Color.HSVToColor(floatArrayOf(hueSlideView.getHue(), saturation, valueSlideView.getValue()))
-                alphaSlideView.setMaskColor(color)
-                onColorChanged(alphaSlideView.getCurrentAlpha(), color)
+                alphaSlideView?.setMaskColor(color)
+                onColorChanged(currentAlpha, color)
             }
 
             override fun onSaturationPicked(saturation: Float) {
                 val color = Color.HSVToColor(floatArrayOf(hueSlideView.getHue(), saturation, valueSlideView.getValue()))
-                onColorPicked(alphaSlideView.getCurrentAlpha(), color)
+                onColorPicked(currentAlpha, color)
             }
         }
 
@@ -100,17 +109,19 @@ class HSVSlideView @JvmOverloads constructor(context: Context, attrs: AttributeS
             override fun onValueChanged(value: Float) {
                 saturationSlideView.setValue(value)
                 val color = Color.HSVToColor(floatArrayOf(hueSlideView.getHue(), saturationSlideView.getSaturation(), value))
-                alphaSlideView.setMaskColor(color)
-                onColorChanged(alphaSlideView.getCurrentAlpha(), color)
+                alphaSlideView?.setMaskColor(color)
+                onColorChanged(currentAlpha, color)
             }
 
             override fun onValuePicked(value: Float) {
                 val color = Color.HSVToColor(floatArrayOf(hueSlideView.getHue(), saturationSlideView.getSaturation(), value))
-                onColorPicked(alphaSlideView.getCurrentAlpha(), color)
+                onColorPicked(currentAlpha, color)
             }
         }
 
     }
+
+    private val currentAlpha = alphaSlideView?.getCurrentAlpha() ?: 255
 
     private fun onColorChanged(alpha: Int, color: Int) {
         val mixedColor = Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
